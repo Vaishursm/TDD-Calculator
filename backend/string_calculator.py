@@ -1,4 +1,4 @@
-
+import re
 from typing import List, Tuple
 
 class StringCalculator:
@@ -19,48 +19,31 @@ class StringCalculator:
 
         total = 0
         for n in nums:
-            if n <= 1000:  # Rule 9: ignore > 1000
+            if n <= 1000:  # ignore > 1000
                 total += n
         return total
 
     def _tokenize(self, s: str) -> Tuple[List[int], str]:
-        # Rules 3-4, 10-12: delimiter parsing
         delimiters = [",", "\n"]
         numbers_part = s
+
         if s.startswith("//"):
             header, _, rest = s.partition("\n")
             numbers_part = rest
-            custom = header[2:]  # after //
+            custom = header[2:]
             if custom.startswith("[") and custom.endswith("]"):
-                # multiple or long delimiters: //[delim][delim2]...
-                delims = []
-                buff = ""
-                in_bracket = False
-                for ch in custom:
-                    if ch == "[" and not in_bracket:
-                        in_bracket = True
-                        buff = ""
-                    elif ch == "]" and in_bracket:
-                        in_bracket = False
-                        delims.append(buff)
-                    elif in_bracket:
-                        buff += ch
-                if delims:
-                    delimiters = delims + ["\n"]
+                # multiple or long delimiters: //[delim1][delim2]...
+                delimiters = re.findall(r"\[(.*?)\]", custom)
             else:
-                # single char delimiter like //;\n
-                if custom:
-                    delimiters = [custom] + ["\n"]
+                delimiters = [custom]
 
-        # Build a unified split using replacement
-        temp = numbers_part
-        for d in sorted(delimiters, key=len, reverse=True):
-            # escape special regex characters by simple replace usage later
-            temp = temp.replace(d, ",")
-        # Validate invalid patterns like "1,\n" not required by kata (we keep it simple)
+        # Escape regex special chars for each delimiter
+        escaped_delims = [re.escape(d) for d in delimiters]
+        pattern = "|".join(escaped_delims)
 
-        # Convert to integers, collect negatives for error
-        items = [x for x in temp.split(",") if x != ""]
+        # Split numbers using regex
+        items = [x for x in re.split(pattern, numbers_part) if x != ""]
+
         values = []
         negatives = []
         for it in items:
@@ -73,7 +56,6 @@ class StringCalculator:
                 return [], f"invalid number: {it!r}"
 
         if negatives:
-            # Rules 5-6: negatives not allowed, show all
             return [], "negatives not allowed: " + ", ".join(map(str, negatives))
 
         return values, ""

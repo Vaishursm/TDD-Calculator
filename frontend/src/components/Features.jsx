@@ -28,7 +28,7 @@ const features = [
       "Negative number exceptions",
       "Multiple negatives in error",
       "GetCalledCount() method",
-      "🚫 Decimal numbers not allowed",
+      "Decimal numbers not allowed",
     ],
   },
   {

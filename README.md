@@ -72,7 +72,7 @@ Open a new terminal:
 ```bash
 cd frontend
 npm install
-npm run dev
+npm start
 ```
 
 The frontend dev server will start (default **http://localhost:5173**).
@@ -137,9 +137,11 @@ You can also run tests via the **UI**:
 ##  Demo
 
 - **Calculate Sum**: Enter numbers with supported delimiters and see the result.  
-- **Run All Tests**: Runs backend unit tests and lists results with status chips.  
+    ![Add numbers](assets/addnumbers.png)
+- **Run All Tests**: Runs backend unit tests and lists results with status chips.
+    ![Run tests](assets/runtests.png)  
 - **Reset**: Resets calculator state + test runner.  
-
+    ![Reset](assets/reset.png)
 ---
 
 ##  API Endpoints

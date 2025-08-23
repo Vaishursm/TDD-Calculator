@@ -27,20 +27,25 @@ const handleResetAll = () => {
     setTestSummary(null);
     setResetTrigger((t) => t + 1);
 };
-  const handleCalculate = async () => {
-    try {
-      const { data } = await axios.post("/api/add", { input });
-      if (data.ok) {
-        setResult(data.result);
-        setCalledCount(data.calledCount);
-        setError("");
-      } else {
-        setError(data.error);
-      }
-    } catch (e) {
-      setError(e.response?.data?.error || e.message);
+const handleCalculate = async () => {
+  try {
+    // Replace literal "\n" with actual newline character
+    const formattedInput = input.replace(/\\n/g, "\n");
+
+    const { data } = await axios.post("/api/add", { input: formattedInput });
+
+    if (data.ok) {
+      setResult(data.result);
+      setCalledCount(data.calledCount);
+      setError("");
+    } else {
+      setError(data.error);
     }
-  };
+  } catch (e) {
+    setError(e.response?.data?.error || e.message);
+  }
+};
+
 
   const handleReset = async () => {
     try {
@@ -100,7 +105,7 @@ const handleResetAll = () => {
               bgcolor: "grey.100",
             }}
           >
-            Add() called: <strong>{calledCount} times</strong>
+            Add called: <strong>{calledCount} times</strong>
           </Typography>
         </Stack>
         <TestRunner
